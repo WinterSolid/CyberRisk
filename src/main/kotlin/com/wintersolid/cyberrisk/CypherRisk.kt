@@ -1,11 +1,24 @@
 package com.wintersolid.cyberrisk
 
+import com.wintersolid.cyberrisk.repository.UserRepository
+import com.wintersolid.cyberrisk.viewmodel.LoginViewModel
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.IOException
 import java.util.*
 
 @SpringBootApplication
 class CypherRisk(private val viewModel: LoginViewModel) {
+	// Companion object for portability between Kotlin -> java
+	companion object {
+		@JvmStatic
+		fun main(args: Array<String>) {
+			val userRepository = UserRepository()
+			val viewModel = LoginViewModel(userRepository)
+			val cypherRisk = CypherRisk(viewModel)
+
+			cypherRisk.start()
+		}
+	}
 
 	fun start() {
 		val scanner = Scanner(System.`in`)
@@ -22,7 +35,7 @@ class CypherRisk(private val viewModel: LoginViewModel) {
 			if (success) {
 				println("Login successful!")
 				try {
-					handleFileOperations(scanner)
+					handleFileOperations(scanner)// Todo handleFileOperations
 				} catch (e: IOException) {
 					System.err.println("File operation failed: " + e.message)
 				}
