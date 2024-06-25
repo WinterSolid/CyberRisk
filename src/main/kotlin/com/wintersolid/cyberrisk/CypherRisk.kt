@@ -33,3 +33,5 @@ class CypherRisk(private val viewModel: LoginViewModel) {
 
 		scanner.close()
 	}
+}
+
