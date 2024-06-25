@@ -29,8 +29,10 @@ To run the CypherRisk application locally, follow these steps:
 ## How it works 
 
 1. Enter your username and password to log in.
-2. Choose a text file to encrypt or decrypt.
-3. Select whether to encrypt (E) or decrypt (D) the file.
+   - username: "testUser"
+   - password: "testPassword"
+3. Choose a text file to encrypt or decrypt.
+4. Select whether to encrypt (E) or decrypt (D) the file.
 
 ## Usage
 
