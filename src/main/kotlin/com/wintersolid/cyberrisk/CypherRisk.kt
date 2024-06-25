@@ -1,12 +1,35 @@
 package com.wintersolid.cyberrisk
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import java.io.IOException
+import java.util.*
 
 @SpringBootApplication
-class cypherRisk
+class CypherRisk(private val viewModel: LoginViewModel) {
 
-fun main(args: Array<String>) {
-	runApplication<cypherRisk>(*args)
-	println("\nHello World")
-}
+	fun start() {
+		val scanner = Scanner(System.`in`)
+
+		print("Enter your username: ")
+		val username = scanner.nextLine()
+		viewModel.username = username
+
+		print("Enter your password: ")
+		val password = scanner.nextLine()
+		viewModel.password = password
+
+		viewModel.login { success ->
+			if (success) {
+				println("Login successful!")
+				try {
+					handleFileOperations(scanner)
+				} catch (e: IOException) {
+					System.err.println("File operation failed: " + e.message)
+				}
+			} else {
+				println("Login failed. Please check your credentials.")
+			}
+		}
+
+		scanner.close()
+	}
