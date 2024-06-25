@@ -3,7 +3,6 @@ package com.wintersolid.cyberrisk
 import com.wintersolid.cyberrisk.repository.UserRepository
 import com.wintersolid.cyberrisk.viewmodel.LoginViewModel
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
@@ -11,29 +10,33 @@ import java.nio.file.Paths
 import java.util.*
 
 @SpringBootApplication
-class CypherRisk {
+class CypherRisk(private val viewModel: LoginViewModel) {
 
-	fun start(viewModel: LoginViewModel) {
+	fun start() {
 		val scanner = Scanner(System.`in`)
 
-		print("Enter your username: ")
-		val username = scanner.nextLine()
-		viewModel.username = username
+		var loggedIn = false
+		while (!loggedIn) {
+			print("Enter your username: ")
+			val username = scanner.nextLine()
+			viewModel.username = username
 
-		print("Enter your password: ")
-		val password = scanner.nextLine()
-		viewModel.password = password
+			print("Enter your password: ")
+			val password = scanner.nextLine()
+			viewModel.password = password
 
-		viewModel.login { success ->
-			if (success) {
-				println("Login successful!")
-				try {
-					handleFileOperations(scanner, viewModel)
-				} catch (e: IOException) {
-					System.err.println("File operation failed: " + e.message)
+			viewModel.login { success ->
+				if (success) {
+					println("Login successful!")
+					loggedIn = true
+					try {
+						handleFileOperations(scanner)
+					} catch (e: IOException) {
+						System.err.println("File operation failed: " + e.message)
+					}
+				} else {
+					println("Login failed. Please check your credentials and try again.")
 				}
-			} else {
-				println("Login failed. Please check your credentials.")
 			}
 		}
 
@@ -41,9 +44,22 @@ class CypherRisk {
 	}
 
 	@Throws(IOException::class)
-	private fun handleFileOperations(scanner: Scanner, viewModel: LoginViewModel) {
-		print("Enter the name of the text file: ")
-		val fileName = scanner.nextLine()
+	private fun handleFileOperations(scanner: Scanner) {
+		var validFile = false
+		var fileName = ""
+
+		while (!validFile) {
+			print("Enter the name of the text file: ")
+			fileName = scanner.nextLine()
+
+			val filePath = Paths.get("src/main/resource/$fileName")
+
+			if (Files.exists(filePath)) {
+				validFile = true
+			} else {
+				println("File does not exist. Please try again.")
+			}
+		}
 
 		print("Do you want to (E)ncrypt or (D)ecrypt the file? ")
 		val choice = scanner.nextLine().uppercase(Locale.getDefault())
@@ -57,9 +73,10 @@ class CypherRisk {
 
 	@Throws(IOException::class)
 	private fun encryptFile(fileName: String) {
-		val fileContent = Files.readAllBytes(Paths.get(fileName))
+		val filePath = Paths.get("src/main/resources/$fileName")
+		val fileContent = Files.readAllBytes(filePath)
 		val encryptedContent = Base64.getEncoder().encodeToString(fileContent)
-		FileWriter(fileName).use { writer ->
+		FileWriter(filePath.toString()).use { writer ->
 			writer.write(encryptedContent)
 		}
 		println("File encrypted successfully.")
@@ -67,9 +84,10 @@ class CypherRisk {
 
 	@Throws(IOException::class)
 	private fun decryptFile(fileName: String) {
-		val fileContent = Files.readAllBytes(Paths.get(fileName))
+		val filePath = Paths.get("src/main/resources/$fileName")
+		val fileContent = Files.readAllBytes(filePath)
 		val decryptedContent = Base64.getDecoder().decode(String(fileContent))
-		FileWriter(fileName).use { writer ->
+		FileWriter(filePath.toString()).use { writer ->
 			writer.write(String(decryptedContent))
 		}
 		println("File decrypted successfully.")
@@ -79,6 +97,6 @@ class CypherRisk {
 fun main(args: Array<String>) {
 	val userRepository = UserRepository()
 	val viewModel = LoginViewModel(userRepository)
-	val app = CypherRisk()
-	app.start(viewModel)
+	val app = CypherRisk(viewModel)
+	app.start()
 }
