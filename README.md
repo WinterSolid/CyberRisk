@@ -34,7 +34,7 @@ To run the CypherRisk application locally, follow these steps:
 3. Choose a text file to encrypt or decrypt.
 4. Select whether to encrypt (E) or decrypt (D) the file.
   - <img width="540" alt="CypherRisk" src="https://github.com/WinterSolid/CyberRisk/assets/58896705/9e0a989b-b0de-4775-8f35-251ca094be8a">
-  - <img width="415" alt="cypherRisk2" src="https://github.com/WinterSolid/CyberRisk/assets/58896705/0aaf9e5e-f2ad-4133-8bb6-950ad5b21512">
+  - <img width="540" alt="cypherRisk2" src="https://github.com/WinterSolid/CyberRisk/assets/58896705/0aaf9e5e-f2ad-4133-8bb6-950ad5b21512">
 
 
 
